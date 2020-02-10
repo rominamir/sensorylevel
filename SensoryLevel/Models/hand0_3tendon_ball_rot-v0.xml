@@ -1,0 +1,350 @@
+<mujoco model="2-link 6-muscle arm -- no sensory info">
+    <!--  Copyright © 2018, Roboti LLC
+
+          This file is licensed under the MuJoCo Resource License (the "License").
+          You may not use this file except in compliance with the License.
+          You may obtain a copy of the License at
+
+            https://www.roboti.us/resourcelicense.txt
+    -->
+    <compiler inertiafromgeom="true" angle="degree">
+        <lengthrange mode ="muscle" uselimit="true"/>
+    </compiler>
+
+    <option timestep="0.01"  iterations="50" solver="Newton" gravity=" 0 0 -9.8" tolerance="1e-10">
+          <flag gravity="enable" contact="enable" passive="enable"/>
+    </option>
+
+    <size njmax="5000" nconmax="1000" nstack="200000"/>
+
+    <visual>
+        <rgba haze=".3 .3 .3 1"/>
+    </visual>
+
+    <default>
+        <joint limited="true" damping="0" frictionloss="10" />
+        <muscle ctrllimited="true" ctrlrange="0 1"  force ="2500" range="0 3.14"/>
+
+
+    </default>
+
+    <asset>
+        <texture name="texmarble" type="cube" file="marble.png"/>
+
+        <texture type="skybox" builtin="gradient" rgb1="0.6 0.6 0.6" rgb2="0 0 0" width="512" height="512"/>
+        <!-- <texture name="texplane" type="2d" builtin="checker" rgb1=".25 .25 .25" rgb2=".3 .3 .3" width="512" height="512" mark="cross" markrgb=".8 .8 .8"/> -->
+       <!-- <material name="matplane" reflectance="0.3" texture="texplane" texrepeat="1 1" texuniform="true"/> -->
+        <material name="matmarble" texture="texmarble" rgba="1 1 1 1" />
+
+    </asset>
+
+    <worldbody>
+        <geom name="floor" pos="0 0 -0.5" size="0 0 1" type="plane" /> <!-- <material="matplane"/> -->
+        <light directional="true" diffuse=".8 .8 .8" specular=".2 .2 .2" pos="0 0 5" dir="0 1 -5"/>
+
+        <body name='hand'>
+            <geom name="palm" type="ellipsoid" pos="0.48 0.50 2.7" size="0.65 0.6  0.1" rgba="1 1 1 .125"/>
+            <joint name="palm" type="slide" pos=" 0.48 0.5 2.7" axis="0 0 1" range ="0 5" springdamper="0.05 5"/>
+
+            <site name="P1" pos="0.48 0.5 2.7" size="0.02" rgba="0.7 0.8 0.95 .1" />
+            <site name="P2" pos="0.48 0.5 4.7" size="0.02" rgba="0.7 0.8 0.95 .1" />
+
+            <site name="S1_J00" pos="0.15 0.3 2.2" size="0.02" rgba="0.7 0.8 0.95 .1" group="1"/>
+            <site name="S1_J01" pos="-0.15 0.3 2.2" size="0.02" rgba="0.7 0.8 0.95 .1" group="1"/>
+
+            <site name="S2_J00" pos="0.15 0.7 2.2" size="0.02" rgba="0.7 0.8 0.95 .1" group="2"/>
+            <site name="S2_J01" pos="-0.15 0.7 2.2" size="0.02" rgba="0.7 0.8 0.95 .1" group="2"/>
+
+            <site name="S3_J00" pos="0.85 0.475 2.2" size="0.02" rgba="0.7 0.8 0.95 .1" group="2"/>
+            <site name="S3_J01" pos="1.15 0.525 2.2" size="0.02" rgba="0.7 0.8 0.95 .1" group="2"/>
+            <site name="S3_J01b" pos="1.20 0.475 2.25" size="0.02" rgba="0.7 0.8 0.95 .1" group="2"/>
+            <site name="S3_J02" pos="1 0.3250 2.25" size="0.02" rgba="0.7 0.8 0.95 .1" group="2"/>
+            <site name="S3_J03" pos="1 0.65 2.25" size="0.02" rgba="0.7 0.8 0.95 .1" group="2"/>
+
+
+            <site name="S1_M1" pos="0.1 0.325 2.9" size="0.02"/> <!-- for G -->
+            <site name="S1_M2" pos="0.1 0.325 2.7" size="0.02"/> <!-- for B -->
+            <site name="S1_M3" pos="-0.1 0.275 2.7" size="0.02"/>
+
+            <site name="S2_M1" pos="0.1 0.725 2.9" size="0.02"/>
+            <site name="S2_M2" pos="0.1 0.725 2.7" size="0.02"/>
+            <site name="S2_M3" pos="-0.1 0.675 2.7" size="0.02"/>
+
+             <site name="S3_M0" pos="1 0.5 2.7" size="0.02"/>
+            <site name="S3_M1" pos="0.9 0.525 2.9" size="0.02"/>
+            <site name="S3_M2" pos="0.9 0.525 2.7" size="0.02"/>
+            <site name="S3_M3" pos="1.1 0.475 2.7" size="0.02"/>
+
+
+            <body name= "Finger1" pos="0 0.3 2.2">
+                <joint type ="hinge" name="MCP1" pos="0 0 0" axis="0 1 0" range=" -90 45"/>
+                <geom name="fin1" type="cylinder" pos="0 0 0" zaxis="0 1 0" size=".1 .05" rgba="1 1 1 .5" mass="0.1"/>
+
+                <geom name="L0" type="capsule" size="0.045" fromto="0 0 0  0 0 -.50" rgba=".7 .7 .7 1"/>
+
+                <site name="S1_L00" pos="0.06 0 -0.1" size="0.02"/>
+                <site name="S1_L01" pos="-0.05 0 -0.1" size="0.02"/>
+
+			    <site name="S1_L04" pos="0.1 0 -0.25" size="0.02"/>
+			    <site name="S1_L03" pos="0  0 -0.25" size="0.02"/>
+                <site name="S1_L02" pos="-0.1 0 -.25" size="0.02"/>
+
+            <body pos="0 0 -0.5">
+                <joint type ="hinge" name="PIP1" pos="0 0 0" axis="0 1 0" range="-100 0"/>
+                <geom name="PIP1" type="cylinder" pos="0 0 0" zaxis="0 1 0" size=".1 .05" rgba="1 1 1 .5" mass="0.1"/>
+
+                <site name="sensorfig1"  fromto="0.005 0 -0.3 0.005 0 -.55" type="capsule" size="0.043"  rgba="0.3 0.2 0.1 0.3"/>
+
+                <geom name="L1" friction= "2 0.001 0.001 " type="capsule" size="0.045" fromto="0 0 0 0 0 -0.55" rgba=".7 .7 .7 1"/>
+                <site name="S1_J10" pos="0.15 0 0" size="0.02" rgba="0.7 0.8 0.95 .1" group="1"/>
+                <site name="S1_J11" pos="-0.15 0 0" size="0.02" rgba="0.7 0.8 0.95 .1" group="1"/>
+                <site name="S1_L11" pos="0.06 0 -.25" size="0.02"/>
+                <site name="S1_L10" pos="-0.05 0 -.25" size="0.02"/>
+
+             </body>
+        </body>
+
+            <body name="Finger2"  pos= "0 0.7 2.2">
+                <joint type ="hinge" name="MCP2"  pos="0 0 0" axis="0 1 0 " range="-90 45"/>
+                <geom name="fin2" type="cylinder" pos="0 0 0" zaxis=" 0 1 0" size=".1 .05" rgba="1 1 1 .5" mass="0.1"/>
+
+            <geom name="L21" type="capsule" size="0.045" fromto="0 0 0  0 0 -.5" rgba=".7 .7 .7 1"/>
+            <site name="S2_L00" pos="0.06 0 -0.1" size="0.02"/>
+    	    <site name="S2_L01" pos="-0.06 0 -0.1" size="0.02"/>
+
+		    <site name="S2_L02" pos="-0.1 0 -0.25" size="0.02"/>
+			<site name="S2_L03" pos="0  0 -0.25" size="0.02"/>
+            <site name="S2_L04" pos="0.1 0 -.25" size="0.02"/>
+
+            <body pos="0 0 -0.5">
+                 <joint type ="hinge" name="PIP2" pos="0 0 0" axis="0 1 0 " range="-100 0"/>
+                 <geom name="PIP2" type="cylinder" pos="0 0 0" zaxis="0 1 0" size=".1 .05" rgba="1 1 1 .5" mass="0.1"/>
+
+                <site name="sensorfig2"  fromto="0.005 0 -0.3 0.005 0 -.55" type="capsule" size="0.043"  rgba="0.3 0.2 0.1 0.3"/>
+
+
+                <geom name="L22" type="capsule" friction= "2 0.001 0.001 " size="0.045" fromto="0 0 0  0 0 -.55" rgba=".7 .7 .7 1"/>
+                <site name="S2_J10" pos="0.15 0 0" size="0.02" rgba="0.7 0.8 0.95 .1" group="2"/>
+                <site name="S2_J11" pos="-0.15 0 0" size="0.02" rgba="0.7 0.8 0.95 .1" group="2"/>
+                <site name="S2_L11" pos="-0.08 0 -.1" size="0.02"/>
+                <site name="S2_L10" pos="0.08 0 -.1" size="0.02"/>
+                <site name="S2_L12" pos="-0.08 0 -.25" size="0.02"/>
+                <site name="S2_L13" pos="0.08 0 -.25" size="0.02"/>
+
+                </body>
+            </body>
+
+            <body name="Thumb" pos="1 1  2.2">
+             
+              <joint type ="hinge" name="MCP3"  pos="0 -0.5 0" axis="0 1 0 " range="-90 45"/>
+                <geom name="fin3" type="cylinder" pos="0 -0.5 0" zaxis=" 0 1 0" size=".1 .05" rgba="1 1 1 .5" mass="0.1"/>
+
+              <!-- <joint type ="hinge" name="MCP3y" pos="0 -0.5 0" axis="0 1 0 " range = "-45 90"  /> -->
+              <!-- <joint type ="hinge" name="MCP3x" pos="0 -0.5 0" axis="1 0 0 " range  ="-50 50"  /> -->
+              <!-- <geom name="fin3" type="sphere" pos="0 -0.5 0"  size=".1" rgba="1 1 1 .5" mass="0.1" /> -->
+                          
+              <geom name="L31" type="capsule" size="0.045" fromto="0 -0.5 0  0  -0.50 -.50" rgba=".7 .7 .7 1"/>
+
+            <site name="S3_L00" pos="-0.075 -0.5 -0.1" size="0.02"/>
+    	    <site name="S3_L01" pos="0.075 -0.5 -0.1" size="0.02"/>
+            <site name="S3_L011" pos="0.005 -0.425 -0.1" size="0.02"/>
+		    <site name="S3_L022" pos="0.005 -0.575 -0.1" size="0.02"/>
+
+            <site name="S3_L02" pos="-0.1 -0.5 -0.25" size="0.02"/>
+			<site name="S3_L03" pos="0  -0.5 -0.25" size="0.02"/>
+            <site name="S3_L04" pos="0.1 -0.5 -.25" size="0.02"/>
+
+                <body pos="0 0 -0.5">
+                    <joint type ="hinge" name="PIP3" pos="0 -.5 0" axis="0 1 0 " range="0 100"/>
+                    <geom name="PIP3" type="cylinder" pos="0 -0.50 0" zaxis="0 1 0" size=".1 .05" rgba="1 1 1 .5" mass="0.1"/>
+                    <site name="S3_J10" pos="-0.15 -0.5 0" size="0.02" rgba="0.7 0.8 0.95 .1" group="2"/>
+                    <site name="S3_J11" pos="0.15 -0.5 0" size="0.02" rgba="0.7 0.8 0.95 .1" group="2"/>
+
+                    <site name="sensorfig3"  fromto="-0.005 -.5 -0.3 -0.005 -.5 -.55" type="capsule" size="0.04505"  rgba="0.3 0.2 0.1 0.3"/>
+
+                    <geom name="L32" type="capsule" friction= "2 0.001 0.001 " size="0.045" fromto="0 -0.5 0  0 -0.5 -.55" rgba=".7 .7 .7 1"/>
+                    <site name="S3_L10" pos="-0.05 -0.5 -.1" size="0.02"/>
+                    <site name="S3_L11" pos="0.05 -0.5 -.1" size="0.02"/>
+                    <site name="S3_L12" pos="-0.05 -0.5 -.25" size="0.02"/>
+                    <site name="S3_L13" pos="0.05 -0.5 -.25" size="0.02"/>
+
+
+                </body>
+            </body>
+
+        </body>
+
+       <!-- <body name='stand'> -->
+            <!-- <geom name="object_geom" type="box" pos="0.5 0.5 0.14" size="1 1 0.8"/> -->
+           <!-- <joint armature="0" damping="0" limited="false" type="free" name="root" pos="0 0 0.071" stiffness="0"/> -->
+      <!-- </body> -->
+
+      <body name = "ball">
+            <geom type="sphere" material="matmarble" pos= "0.5 0.5 1.65 " size="0.45" rgba="0.8 0.45 0.51 1" mass ="1.85" friction ="2 0.001 0.001" />
+
+            <joint name="rootx" type="slide" pos="0.5 0.5 1.65" armature="0" axis="1 0 0"  springdamper="0.09 2" frictionloss="1" limited="false" stiffness="2" />
+            <joint name="rooty" type="slide" pos="0.5 0.5 1.65" armature="0" axis="0 1 0" springdamper="0.09 2" frictionloss="1" limited="false" stiffness="2"/>
+            <joint name="rootz" type="slide" pos="0.5 0.5 1.65" armature="0" axis="0 0 1" springdamper="0.09 1" frictionloss="1" limited="false" stiffness="2"/>
+        
+            <!-- <joint name="rotz" type="hinge" pos="0.5 0.5 1.650" armature="0" axis="0 0 1 "  damping= "3" frictionloss="2" limited="false"   stiffness="0" />  -->
+            <joint name="roty" type="hinge" pos="0.5 0.5 1.650" armature="0" axis="0 1 0 " damping="2"  limited="false"  frictionloss= "0" stiffness="2" springdamper= "0.9 1"/>
+
+<!--            <joint name="rotx" type="hinge" pos="0.5 0.5 1.50" armature="0" axis="1 0 0 " damping="2" frictionloss="0" limited="false"   stiffness="0" />-->
+
+           <!-- <site name="Sb1" pos="0.95 0.5 1.65" size="0.05" rgba="0.55 0.78 0.55 1"/> -->
+           <!-- <site name="Sb2" pos="0.5 0.95 1.65" size="0.05" rgba="0.95 0.78 0.55 1"/> -->
+        </body>
+
+     <!--   <body pos="0.5 0.5 2">
+            <freejoint/
+            <composite type="box" count="7 7 7" spacing="0.04">
+            <skin texcoord="true" material="matsponge" rgba=".7 .7 .7 1"/>
+            <geom type="capsule" size=".015 0.05" rgba=".8 .2 .1 1"/>
+    </composite>
+        </body> -->
+    </worldbody>
+
+   <tendon>
+       <!-- <spatial name="palmtendon" width="0.01" rgba="0.55 0.78 0.55 1">
+            <site site="P1"/>
+            <geom geom="palm"/>
+            <site site="P2"/>
+        </spatial> -->
+
+        <!-- tendon finger 1-->
+
+       <spatial name="T1_M1" width="0.01" rgba="0.55 0.78 0.55 1"> <!-- green-->
+            <site site="S1_M1"/>
+            <geom geom="fin1" sidesite="S1_J01"/>
+            <site site="S1_L03"/>
+            <geom geom="PIP1" sidesite="S1_J10"/>
+            <site site="S1_L11"/>
+
+        </spatial>
+
+        <spatial name="T1_M2" width="0.01" rgba="0.95 0.50 0.47 1"> <!-- red-->
+            <site site="S1_M3"/>
+            <geom geom="fin1" sidesite="S1_J00"/>
+            <site site="S1_L00"/>
+        </spatial>
+
+        <!-- yellow-->
+      <!--  <spatial name="T1_M4" width="0.01" rgba="0.45 0.49 0 1">
+            <site site="S1_L04"/>
+            <geom geom="PIP1" sidesite="S1_J10"/>
+            <site site="S1_L11"/>
+        </spatial>
+-->
+         <spatial name="T1_M3" width="0.01" rgba="0.45 0.49 0.83 1"> <!-- blue-->
+             <site site="S1_M2"/>
+             <geom geom="fin1" sidesite="S1_J01"/>
+             <site site="S1_L02"/>
+             <geom geom="PIP1" sidesite="S1_J11"/>
+            <site site="S1_L11"/>
+        </spatial>
+
+        <!-- tendon finger 2-->
+     <spatial name="T2_M1" width="0.01" rgba="0.55 0.78 0.55 1"> <!-- green-->
+            <site site="S2_M1"/>
+            <geom geom="fin2" sidesite="S2_J01"/>
+            <site site="S2_L03"/>
+            <geom geom="PIP2" sidesite="S2_J10"/>
+            <site site="S2_L11"/>
+        </spatial>
+
+        <spatial name="T2_M2" width="0.01" rgba="0.95 0.50 0.47 1"> <!-- red-->
+            <site site="S2_M3"/>
+            <geom geom="fin2" sidesite="S2_J00"/>
+            <site site="S2_L00"/>
+        </spatial>
+
+    <!-- yellow-->
+      <!--  <spatial name="T2_M3" width="0.01" rgba="0.45 0.49 0 1">
+            <site site="S2_L04"/>
+            <geom geom="PIP2" sidesite="S2_J10"/>
+            <site site="S2_L13"/>
+        </spatial> -->
+
+         <spatial name="T2_M3" width="0.01" rgba="0.45 0.49 0.83 1"> <!-- blue-->
+             <site site="S2_M2"/>
+             <geom geom="fin2" sidesite="S2_J01"/>
+             <site site="S2_L02"/>
+             <geom geom="PIP2" sidesite="S2_J11"/>
+            <site site="S2_L10"/>
+        </spatial>
+
+
+       <!-- tendon finger 3-->
+    <spatial name="T3_M1" width="0.01" rgba="0.95 0.50 0.47 1"> <!-- red-->
+            <site site="S3_M3"/>
+            <geom geom="fin3" sidesite="S3_J00"/>
+            <site site="S3_L00"/>
+        </spatial>
+
+        <spatial name="T3_M2" width="0.01" rgba="0.55 0.78 0.55 1"> <!-- green-->
+            <site site="S3_M1"/>
+            <geom geom="fin3" sidesite="S3_J01"/>
+            <site site="S3_L03"/>
+            <geom geom="PIP3" sidesite="S3_J10"/>
+            <site site="S3_L11"/>
+        </spatial>
+
+       <spatial name="T3_M3" width="0.01" rgba="0.45 0.49 0.83 1"> <!-- blue-->
+             <site site="S3_M2"/>
+             <geom geom="fin3" sidesite="S3_J01b"/>
+             <site site="S3_L04"/>
+             <geom geom="PIP3" sidesite="S3_J11"/>
+            <site site="S3_L11"/>
+        </spatial>
+
+       <!-- <spatial name="T3_M11" width="0.01" rgba="0.55 0.78 0.55 1"> -->
+            <!-- <site site="S3_M0"/> -->
+            <!-- <geom geom="fin3" sidesite="S3_J02"/> -->
+            <!-- <site site="S3_L022"/> -->
+        <!-- </spatial> -->
+       <!-- <spatial name="T3_M22" width="0.01" rgba="0.55 0.78 0.55 1"> -->
+            <!-- <site site="S3_M0"/> -->
+            <!-- <geom geom="fin3" sidesite="S3_J03"/> -->
+            <!-- <site site="S3_L011"/> -->
+        <!-- </spatial> -->
+
+
+
+    </tendon>
+
+    <actuator >
+       <!-- <motor name="slider" gear="0 0 2.7 0 0 3.7"  joint="palm" forcerange="-1000 1000"/> -->
+      <!--  <position name="handA" joint="palm" ctrlrange="-1 1" kp="1" forcerange="-100 100"/> -->
+
+        <motor name="slider" gear="4000"  joint="palm" />
+    	<muscle name="T1_M1" tendon="T1_M1" lengthrange="0 5"/>
+    	<muscle name="T1_M2" tendon="T1_M2" lengthrange="0 5"/>
+    	<muscle name="T1_M3" tendon="T1_M3" lengthrange="0 5"/>
+
+
+        <muscle name="T2_M1" tendon="T2_M1" lengthrange="0 5"/>
+    	<muscle name="T2_M2" tendon="T2_M2" lengthrange="0 5"/>
+    	<muscle name="T2_M3" tendon="T2_M3" lengthrange="0 5"/>
+
+
+        <muscle name="T3_M1" tendon="T3_M1" lengthrange="0 2"/>
+    	<muscle name="T3_M2" tendon="T3_M2" lengthrange="0 5"/>
+        <!-- <muscle name="T3_M11" tendon="T3_M11" lengthrange="0 3"/> -->
+    	<!-- <muscle name="T3_M22" tendon="T3_M22" lengthrange="0 3"/> -->
+        <muscle name="T3_M3" tendon="T3_M3" lengthrange="0 5"/>
+
+
+    </actuator>
+<!--  <sensor>-->
+<!--     <touch name="touchsensor1" site="sensorfig1" />-->
+<!--     <touch name="touchsensor2" site="sensorfig2" />-->
+<!--     <touch name="touchsensor3" site="sensorfig3" />-->
+<!---->
+<!--    </sensor>-->
+      <!-- <sensor> -->
+     <!-- <force name="touchsensor1" site="sensorfig1" /> -->
+     <!-- <force name="touchsensor2" site="sensorfig2" /> -->
+     <!-- <force name="touchsensor3" site="sensorfig3" /> -->
+
+    <!-- </sensor> -->
+</mujoco>
